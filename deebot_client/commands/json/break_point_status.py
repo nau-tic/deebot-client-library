@@ -26,11 +26,24 @@ class GetBreakPointStatus(JsonGetCommand):
 
         :return: A message response
         """
+        status = data["status"]
+        is_conflict = data["isConflict"]
+        continue_left_time = data["continueLeftTime"]
+
+        if (
+            isinstance(status, bool)
+            or not isinstance(status, int)
+            or isinstance(continue_left_time, bool)
+            or not isinstance(continue_left_time, int)
+            or is_conflict not in (0, 1, True, False)
+        ):
+            return HandlingResult.analyse()
+
         event_bus.notify(
             BreakPointStatusEvent(
-                status=int(data.get("status", 0)),
-                is_conflict=bool(data.get("isConflict", 0)),
-                continue_left_time=int(data.get("continueLeftTime", 0)),
+                status=status,
+                is_conflict=bool(is_conflict),
+                continue_left_time=continue_left_time,
             )
         )
         return HandlingResult.success()

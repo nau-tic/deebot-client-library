@@ -26,5 +26,9 @@ class GetMapState(JsonGetCommand):
 
         :return: A message response
         """
-        event_bus.notify(MapStateEvent(state=str(data.get("state", ""))))
+        state = data["state"]
+        if not isinstance(state, str):
+            return HandlingResult.analyse()
+
+        event_bus.notify(MapStateEvent(state=state))
         return HandlingResult.success()

@@ -13,7 +13,7 @@ class BreakPointStatusEvent(Event):
 
     status: int
     is_conflict: bool
-    continue_left_time: int
+    continue_left_time: int  # in seconds
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,6 @@ class MapStateEvent(Event):
 class RelocationStateEvent(Event):
     """Relocation state."""
 
-    is_has_map: bool
+    has_map: bool
     mode: str
     state: str

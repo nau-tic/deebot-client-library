@@ -7,6 +7,7 @@ from deebot_client.commands.json.advanced_mode import GetAdvancedMode
 from deebot_client.commands.json.auto_empty import GetAutoEmpty
 from deebot_client.commands.json.battery import GetBattery
 from deebot_client.commands.json.border_spin import GetBorderSpin
+from deebot_client.commands.json.break_point_status import GetBreakPointStatus
 from deebot_client.commands.json.carpet import GetCarpetAutoFanBoost
 from deebot_client.commands.json.charge_state import GetChargeState
 from deebot_client.commands.json.child_lock import GetChildLock
@@ -20,10 +21,12 @@ from deebot_client.commands.json.error import GetError
 from deebot_client.commands.json.fan_speed import GetFanSpeed
 from deebot_client.commands.json.life_span import GetLifeSpan
 from deebot_client.commands.json.map import GetCachedMapInfo, GetMajorMap, GetMapTrace
+from deebot_client.commands.json.map_state import GetMapState
 from deebot_client.commands.json.multimap_state import GetMultimapState
 from deebot_client.commands.json.network import GetNetInfo
 from deebot_client.commands.json.ota import GetOta
 from deebot_client.commands.json.pos import GetPos
+from deebot_client.commands.json.relocation_state import GetRelocationState
 from deebot_client.commands.json.station_state import GetStationState
 from deebot_client.commands.json.stats import GetStats, GetTotalStats
 from deebot_client.commands.json.sweep_mode import GetSweepMode
@@ -37,6 +40,7 @@ from deebot_client.events import (
     AvailabilityEvent,
     BatteryEvent,
     BorderSpinEvent,
+    BreakPointStatusEvent,
     CachedMapInfoEvent,
     CarpetAutoFanBoostEvent,
     ChildLockEvent,
@@ -51,11 +55,13 @@ from deebot_client.events import (
     LifeSpanEvent,
     MajorMapEvent,
     MapChangedEvent,
+    MapStateEvent,
     MapTraceEvent,
     MultimapStateEvent,
     NetworkInfoEvent,
     OtaEvent,
     PositionsEvent,
+    RelocationStateEvent,
     ReportStatsEvent,
     RoomsEvent,
     StateEvent,
@@ -90,6 +96,7 @@ EXPECTED_REFRESH_COMMANDS = {
     AvailabilityEvent: [GetBattery(is_available_check=True)],
     BatteryEvent: [GetBattery()],
     BorderSpinEvent: [GetBorderSpin()],
+    BreakPointStatusEvent: [GetBreakPointStatus()],
     CachedMapInfoEvent: [GetCachedMapInfo()],
     CarpetAutoFanBoostEvent: [GetCarpetAutoFanBoost()],
     ChildLockEvent: [GetChildLock()],
@@ -104,12 +111,14 @@ EXPECTED_REFRESH_COMMANDS = {
     LifeSpanEvent: [GetLifeSpan(list(LIFE_SPANS))],
     MajorMapEvent: [GetMajorMap()],
     MapChangedEvent: [],
+    MapStateEvent: [GetMapState()],
     MapTraceEvent: [GetMapTrace()],
     MopAttachedEvent: [GetWaterInfo()],
     MultimapStateEvent: [GetMultimapState()],
     NetworkInfoEvent: [GetNetInfo()],
     OtaEvent: [GetOta()],
     PositionsEvent: [GetPos()],
+    RelocationStateEvent: [GetRelocationState()],
     ReportStatsEvent: [],
     RoomsEvent: [GetCachedMapInfo()],
     StateEvent: [GetChargeState(), GetCleanInfoV2()],

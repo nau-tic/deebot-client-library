@@ -27,6 +27,7 @@ from deebot_client.commands.json.advanced_mode import GetAdvancedMode, SetAdvanc
 from deebot_client.commands.json.auto_empty import GetAutoEmpty, SetAutoEmpty
 from deebot_client.commands.json.battery import GetBattery
 from deebot_client.commands.json.border_spin import GetBorderSpin, SetBorderSpin
+from deebot_client.commands.json.break_point_status import GetBreakPointStatus
 from deebot_client.commands.json.carpet import (
     GetCarpetAutoFanBoost,
     SetCarpetAutoFanBoost,
@@ -58,6 +59,7 @@ from deebot_client.commands.json.map import (
     GetMinorMap,
     SetMajorMap,
 )
+from deebot_client.commands.json.map_state import GetMapState
 from deebot_client.commands.json.multimap_state import (
     GetMultimapState,
     SetMultimapState,
@@ -67,6 +69,7 @@ from deebot_client.commands.json.ota import GetOta, SetOta
 from deebot_client.commands.json.play_sound import PlaySound
 from deebot_client.commands.json.pos import GetPos
 from deebot_client.commands.json.relocation import SetRelocationState
+from deebot_client.commands.json.relocation_state import GetRelocationState
 from deebot_client.commands.json.station_state import GetStationState
 from deebot_client.commands.json.stats import GetStats, GetTotalStats
 from deebot_client.commands.json.sweep_mode import GetSweepMode, SetSweepMode
@@ -83,6 +86,7 @@ from deebot_client.events import (
     AvailabilityEvent,
     BatteryEvent,
     BorderSpinEvent,
+    BreakPointStatusEvent,
     CachedMapInfoEvent,
     CarpetAutoFanBoostEvent,
     ChildLockEvent,
@@ -98,11 +102,13 @@ from deebot_client.events import (
     LifeSpanEvent,
     MajorMapEvent,
     MapChangedEvent,
+    MapStateEvent,
     MapTraceEvent,
     MultimapStateEvent,
     NetworkInfoEvent,
     OtaEvent,
     PositionsEvent,
+    RelocationStateEvent,
     ReportStatsEvent,
     RoomsEvent,
     StateEvent,
@@ -134,6 +140,9 @@ def get_device_info() -> StaticDeviceInfo:
             charge=CapabilityExecute(Charge),
             clean=CapabilityClean(
                 action=CapabilityCleanAction(command=Clean, area=CleanArea),
+                break_point_status=CapabilityEvent(
+                    BreakPointStatusEvent, [GetBreakPointStatus()]
+                ),
                 continuous=CapabilitySetEnable(
                     ContinuousCleaningEvent,
                     [GetContinuousCleaning()],
@@ -198,8 +207,12 @@ def get_device_info() -> StaticDeviceInfo:
                 ),
                 position=CapabilityEvent(PositionsEvent, [GetPos()]),
                 relocation=CapabilityExecute(SetRelocationState),
+                relocation_state=CapabilityEvent(
+                    RelocationStateEvent, [GetRelocationState()]
+                ),
                 rooms=CapabilityEvent(RoomsEvent, [GetCachedMapInfo()]),
                 set=CapabilityExecute(GetMapSet),
+                state=CapabilityEvent(MapStateEvent, [GetMapState()]),
                 trace=CapabilityEvent(MapTraceEvent, [GetMapTrace()]),
             ),
             network=CapabilityEvent(NetworkInfoEvent, [GetNetInfo()]),

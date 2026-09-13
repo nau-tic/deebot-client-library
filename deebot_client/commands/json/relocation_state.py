@@ -26,11 +26,18 @@ class GetRelocationState(JsonGetCommand):
 
         :return: A message response
         """
+        has_map = data["isHasMap"]
+        mode = data["mode"]
+        state = data["state"]
+
+        if (
+            has_map not in (0, 1, True, False)
+            or not isinstance(mode, str)
+            or not isinstance(state, str)
+        ):
+            return HandlingResult.analyse()
+
         event_bus.notify(
-            RelocationStateEvent(
-                is_has_map=bool(data.get("isHasMap", 0)),
-                mode=str(data.get("mode", "")),
-                state=str(data.get("state", "")),
-            )
+            RelocationStateEvent(has_map=bool(has_map), mode=mode, state=state)
         )
         return HandlingResult.success()
