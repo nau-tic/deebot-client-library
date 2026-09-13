@@ -277,10 +277,20 @@ def get_device_info() -> StaticDeviceInfo:
                         water_info.WaterAmount.LOW,
                         water_info.WaterAmount.MEDIUM,
                         water_info.WaterAmount.HIGH,
+                        water_info.WaterAmount.ULTRAHIGH,
                     ),
                 ),
                 mop_attached=CapabilityEvent(
                     water_info.MopAttachedEvent, [GetWaterInfo()]
+                ),
+                sweep_type=CapabilitySetTypes(
+                    event=water_info.WaterSweepTypeEvent,
+                    get=[GetWaterInfo()],
+                    set=lambda sweep_type: SetWaterInfo(sweep_type=sweep_type),
+                    types=(
+                        water_info.SweepType.STANDARD,
+                        water_info.SweepType.DEEP,
+                    ),
                 ),
             ),
         ),

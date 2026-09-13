@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from deebot_client import hardware
+from deebot_client.capabilities import CapabilitySetTypes
 from deebot_client.commands import StationAction
 from deebot_client.commands.json import station_action
 from deebot_client.commands.json.advanced_mode import GetAdvancedMode
@@ -30,7 +31,7 @@ from deebot_client.commands.json.sweep_mode import GetSweepMode
 from deebot_client.commands.json.true_detect import GetTrueDetect
 from deebot_client.commands.json.voice_assistant_state import GetVoiceAssistantState
 from deebot_client.commands.json.volume import GetVolume
-from deebot_client.commands.json.water_info import GetWaterInfo
+from deebot_client.commands.json.water_info import GetWaterInfo, SetWaterInfo
 from deebot_client.events import (
     AdvancedModeEvent,
     AutoEmptyEvent,
@@ -69,7 +70,13 @@ from deebot_client.events import (
     auto_empty,
 )
 from deebot_client.events.efficiency_mode import EfficiencyModeEvent
-from deebot_client.events.water_info import MopAttachedEvent, WaterAmountEvent
+from deebot_client.events.water_info import (
+    MopAttachedEvent,
+    SweepType,
+    WaterAmount,
+    WaterAmountEvent,
+    WaterSweepTypeEvent,
+)
 
 # Consumables the X1 OMNI reports (superset of the X1 Turbo profile).
 LIFE_SPANS = (
@@ -121,6 +128,7 @@ EXPECTED_REFRESH_COMMANDS = {
     VoiceAssistantStateEvent: [GetVoiceAssistantState()],
     VolumeEvent: [GetVolume()],
     WaterAmountEvent: [GetWaterInfo()],
+    WaterSweepTypeEvent: [GetWaterInfo()],
 }
 
 
@@ -159,6 +167,24 @@ async def test_1vxt52_omni_additions() -> None:
     assert capabilities.settings.border_spin is not None
     assert capabilities.settings.efficiency_mode is not None
     assert capabilities.settings.ota is not None
+
+    # Water controls: all four flow levels and the mop mode (standard/deep)
+    assert capabilities.water is not None
+    assert isinstance(capabilities.water.amount, CapabilitySetTypes)
+    assert capabilities.water.amount.types == (
+        WaterAmount.LOW,
+        WaterAmount.MEDIUM,
+        WaterAmount.HIGH,
+        WaterAmount.ULTRAHIGH,
+    )
+    assert isinstance(capabilities.water.sweep_type, CapabilitySetTypes)
+    assert capabilities.water.sweep_type.types == (
+        SweepType.STANDARD,
+        SweepType.DEEP,
+    )
+    command = capabilities.water.sweep_type.set(SweepType.DEEP)
+    assert isinstance(command, SetWaterInfo)
+    assert command._args == {"sweepType": SweepType.DEEP.value}
 
 
 async def test_x1_turbo_profile_stays_station_less() -> None:
