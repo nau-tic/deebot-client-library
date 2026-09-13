@@ -7,7 +7,7 @@ from enum import IntEnum, unique
 
 from .base import Event as _Event
 
-__all__ = ["State", "StationEvent"]
+__all__ = ["State", "StationErrorEvent", "StationEvent", "StationInfoEvent"]
 
 
 @unique
@@ -25,3 +25,23 @@ class StationEvent(_Event):
     """Base Station Event representation."""
 
     state: State
+
+
+@dataclass(frozen=True)
+class StationErrorEvent(_Event):
+    """Errors reported by the base station, e.g. a water-tank condition.
+
+    Empty means no current station errors. Codes are Ecovacs error codes (see
+    ``deebot_client.const.ERROR_CODES``), e.g. 301 "FreshWaterBox empty".
+    """
+
+    errors: tuple[int, ...]
+
+
+@dataclass(frozen=True)
+class StationInfoEvent(_Event):
+    """Base station identity and firmware."""
+
+    name: str
+    model: str
+    firmware: str

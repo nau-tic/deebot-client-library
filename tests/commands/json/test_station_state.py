@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 
 from deebot_client.commands.json.station_state import GetStationState
-from deebot_client.events.station import State, StationEvent
+from deebot_client.events.station import State, StationErrorEvent, StationEvent
 from deebot_client.message import HandlingResult, HandlingState
 from tests.helpers import get_request_json, get_success_body
 
@@ -34,7 +34,9 @@ async def test_GetStationState(
         )
     )
     await assert_command(
-        GetStationState(), json, (firmware_event, StationEvent(expected))
+        GetStationState(),
+        json,
+        (firmware_event, StationErrorEvent(()), StationEvent(expected)),
     )
 
 
@@ -67,6 +69,6 @@ async def test_GetStationState_analyse(
     await assert_command(
         GetStationState(),
         json,
-        firmware_event,
+        (firmware_event,),
         handling_result=HandlingResult(HandlingState.ANALYSE_LOGGED),
     )
